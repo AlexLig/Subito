@@ -1,6 +1,6 @@
 export default `
 ------------------
-< You are awesome! >
+< Jesus loves you >
 ------------------
   \\
    \\
