@@ -9,11 +9,10 @@ const employeeSchema = new mongoose.Schema({
     maxlength: 50,
   },
   vat: {
-    type: Number,
+    type: String,
     required: true,
     trim: true,
-    max: 9,
-    min: 9,
+    maxlength: 9,
   },
   workStart: Date,
   workFinish: Date,

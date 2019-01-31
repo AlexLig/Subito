@@ -6,9 +6,9 @@ export function validate(employee: any) {
       .min(2)
       .max(50)
       .required(),
-    vat: Joi.number()
-      .min(9)
-      .max(9)
+    vat: Joi.string()
+      .regex(/^[0-9]+$/)
+      .length(9)
       .required(),
     workStart: Joi.date().required(),
     workFinish: Joi.date().required(),
