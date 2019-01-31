@@ -8,7 +8,7 @@ import {
   updateEmployee,
 } from './handlers';
 
-const router = express.Router();
+export const router = express.Router();
 // TODO: implement route handlers.
 router
   .route('/')
