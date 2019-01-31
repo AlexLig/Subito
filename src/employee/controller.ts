@@ -1,15 +1,21 @@
 import express from 'express';
 // import {Router} from 'express'
-import { allEmployees } from './handlers';
+import {
+  allEmployees,
+  createEmployee,
+  deleteEmployee,
+  getEmployee,
+  updateEmployee,
+} from './handlers';
 
 const router = express.Router();
 // TODO: implement route handlers.
 router
   .route('/')
   .get(allEmployees)
-  .post();
+  .post(createEmployee);
 router
   .route('/:id')
-  .get()
-  .put()
-  .delete();
+  .get(getEmployee)
+  .put(updateEmployee)
+  .delete(deleteEmployee);
