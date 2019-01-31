@@ -1,4 +1,5 @@
 import express from 'express';
+import { isUnique } from '../middlewares/isUnique';
 // import {Router} from 'express'
 import {
   allEmployees,
@@ -7,7 +8,9 @@ import {
   getEmployee,
   updateEmployee,
 } from './handlers';
+import { Employee } from './model';
 
+const uniqueVatMW = isUnique({ collection: Employee, property: 'vat' });
 export const router = express.Router();
 // TODO: implement route handlers.
 router
@@ -17,5 +20,5 @@ router
 router
   .route('/:id')
   .get(getEmployee)
-  .put(updateEmployee)
+  .put(uniqueVatMW, updateEmployee)
   .delete(deleteEmployee);
