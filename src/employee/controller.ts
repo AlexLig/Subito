@@ -16,7 +16,7 @@ export const router = express.Router();
 router
   .route('/')
   .get(allEmployees)
-  .post(createEmployee);
+  .post(uniqueVatMW, createEmployee);
 router
   .route('/:id')
   .get(getEmployee)
