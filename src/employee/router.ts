@@ -1,17 +1,16 @@
 import express from 'express';
-import { isUnique } from '../middlewares/isUnique';
-// import {Router} from 'express'
+import { isUniqueVat } from '../middlewares/isUniqueVat';
 import { findAll, create, deleteOne, findOne, updateOne } from './routeHandlers';
-import { Employee } from './entity';
+import { employerExists } from './employerExists';
 
-const uniqueVatMW = isUnique({ collection: Employee, property: 'vat' });
+const uniqueVatEmployee = isUniqueVat('Employee');
 export const router = express.Router();
 router
   .route('/')
   .get(findAll)
-  .post(uniqueVatMW, create);
+  .post([employerExists, uniqueVatEmployee], create);
 router
   .route('/:id')
   .get(findOne)
-  .put(uniqueVatMW, updateOne)
+  .put(uniqueVatEmployee, updateOne)
   .delete(deleteOne);

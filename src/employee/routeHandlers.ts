@@ -12,15 +12,17 @@ export const create = async (req: Request, res: Response) => {
   //   if (duplicate) {
   //     throw duplicateException(generalErrors.VAT_MUST_BE_UNIQUE);
   //   }
-    const { body } = req;
-    const employer = await this.employerService.findById(body.employerId);
-    const employeeToCreate = { ...body, employer };
+  const {
+    body,
+    body: { employer },
+  } = req;
+  // const employer = await this.employerService.findById(body.employerId);
+  const employeeToCreate = { ...body, employer };
 
-    try {
-      return await this.repository.save(employeeToCreate);
-    } catch (e) {
-      throw res.status(500).send('internal server error');
-    }
+  try {
+    return await this.repository.save(employeeToCreate);
+  } catch (e) {
+    return res.status(500).send('internal server error');
   }
 };
 
