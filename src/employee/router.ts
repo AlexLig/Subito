@@ -1,6 +1,6 @@
 import express from 'express';
 import { isUniqueVat } from '../middlewares/isUniqueVat';
-import { findAll, create, deleteOne, findOne, updateOne } from './routeHandlers';
+import { findAll, create, deleteOne, updateOne, findById } from './routeHandlers';
 import { employerExists } from './employerExists';
 
 const uniqueVatEmployee = isUniqueVat('Employee');
@@ -11,6 +11,6 @@ router
   .post([employerExists, uniqueVatEmployee], create);
 router
   .route('/:id')
-  .get(findOne)
+  .get(findById)
   .put(uniqueVatEmployee, updateOne)
   .delete(deleteOne);
