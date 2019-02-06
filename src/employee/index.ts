@@ -1,1 +1,1 @@
-export { router as employeesController } from './controller';
+export { router as employeesController } from './router';

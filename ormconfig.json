@@ -1,0 +1,14 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "postgres",
+  "password": "postgres",
+  "database": "subito",
+  "entities": ["src/**/**.entity{.ts,.js}"],
+  "autoSchemaSync": true,
+  "synchronize": true,
+  "logging": ["error", "warn", "info", "log", "schema"],
+  "logger": "file",
+  "maxQueryExecutionTime": 1000
+}
