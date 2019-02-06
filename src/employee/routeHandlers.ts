@@ -1,22 +1,16 @@
 import { Request, Response } from 'express';
 import { Employee } from './entity';
+import { getRepository } from 'typeorm';
 // import { validate } from './validation';
 
 const employeeByIdNotFoundMessage = 'Employee with the given Id was not found';
 
 /** - POST - /employee # creates a new employee. */
 export const create = async (req: Request, res: Response) => {
-  // const { employerId, vat } = employeeDto;
-
-  //   const duplicate = await this.repository.findOne({ vat });
-  //   if (duplicate) {
-  //     throw duplicateException(generalErrors.VAT_MUST_BE_UNIQUE);
-  //   }
   const {
     body,
     body: { employer },
   } = req;
-  // const employer = await this.employerService.findById(body.employerId);
   const employeeToCreate = { ...body, employer };
 
   try {
@@ -28,30 +22,57 @@ export const create = async (req: Request, res: Response) => {
 
 /** - GET - /employees # returns all employees. */
 export const findAll = async (req: Request, res: Response) => {
-  const employees = await Employee.find().sort('name');
-  res.send(employees);
+  try {
+    const employees = await getRepository('Employee').find();
+    if (!employees) return res.status(404).send('not found');
+    res.send(employees);
+  } catch (error) {
+    res.status(500).send('internal server error');
+  }
 };
 
 /** - GET - /employee/{id} # returns an employee with given Id. */
-export const findOne = async (req: Request, res: Response) => {
-  const employee = await Employee.findById(req.params.id);
-  if (!employee) return res.status(404).send(employeeByIdNotFoundMessage);
-  res.send(employee);
+export const findById = async (req: Request, res: Response) => {
+  const { id } = req.body;
+  try {
+    const employee = await getRepository('Employee').findOne(id);
+    if (!employee) return res.status(404).send('not found');
+    res.send(employee);
+  } catch (error) {
+    res.status(500).send('internal server error');
+  }
 };
 
 /** - PUT - /employee/{id} # updates an employee by Id. */
 export const updateOne = async (req: Request, res: Response) => {
-  const { body } = req;
-  const { error } = validate(body);
-  if (error) return res.status(400).send(error.details[0].message);
-  const employee = await Employee.findByIdAndUpdate(req.params.id, body, { new: true });
+  // TODO: make middleware
+  const { vat, id } = req.body;
+  const duplicate = await this.repository.findOne({ vat });
+  if (duplicate && duplicate.id.toString() !== id) {
+    return res.status(400).send('bad request');
+  }
+
+  const employee = await getRepository('Employee').findOne(id);
   if (!employee) return res.status(404).send(employeeByIdNotFoundMessage);
-  res.send(employee);
+
+  const updated = { ...employee, ...req.body };
+
+  try {
+    const result = await getRepository('Employee').save(updated);
+    return res.send(result);
+  } catch (e) {
+    return res.status(500).send('internal server error');
+  }
 };
 
 /** - DELETE - /employee/{id} # deletes an employee by Id. */
 export const deleteOne = async (req: Request, res: Response) => {
-  const employee = await Employee.findByIdAndRemove(req.params.id);
-  if (!employee) return res.status(404).send(employeeByIdNotFoundMessage);
-  res.send(employee);
+  try {
+    const employee = await getRepository('Employee').findOne(req.params.id);
+    if (!employee) return res.status(404).send(employeeByIdNotFoundMessage);
+    const deletedEmployee = await getRepository('Employee').remove(employee);
+    res.send(deletedEmployee);
+  } catch (e) {
+    return res.status(500).send('internal server error');
+  }
 };
