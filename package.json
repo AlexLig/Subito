@@ -1,7 +1,8 @@
 {
   "name": "subito-e8-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Serverside of the subito app suite.",
+  "author": "subito.dev@gmail.com",
   "main": "dist/index.js",
   "scripts": {
     "build-ts": "tsc",
@@ -10,7 +11,6 @@
     "watch-node": "nodemon dist/index.js",
     "watch-ts": "tsc -w"
   },
-  "author": "",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^1.18.9",

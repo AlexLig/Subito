@@ -3,6 +3,8 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "target": "es5",
+    "declaration": true,
+    "removeComments": true,
     "noImplicitAny": true,
     "moduleResolution": "node",
     "sourceMap": true,
@@ -14,7 +16,8 @@
     },
     "lib": ["esnext", "dom"],
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "plugins": [{ "name": "typescript-tslint-plugin", "configFile": "./tslint.json" }]
   },
   "include": ["src/**/*"]
 }
