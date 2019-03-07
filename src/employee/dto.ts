@@ -1,16 +1,16 @@
 import {
-  IsOptional,
   IsString,
-  MaxLength,
+  Length,
   IsNumberString,
   IsAlphanumeric,
-  Length,
+  IsISO8601,
+  IsMilitaryTime,
 } from 'class-validator';
 import { generalErrors as e } from '../shared';
+import { employeeErrors as ey } from '../shared';
 
-export class CreateEmployerDto {
+export class CreateEmployeeDto {
   @IsString()
-  @MaxLength(255, { message: e.TOO_MANY_CHARACTERS })
   readonly name: string;
 
   @IsNumberString({ message: e.INSERT_ONLY_NUMBERS })
@@ -18,9 +18,15 @@ export class CreateEmployerDto {
   @Length(9, 9, { message: e.VAT_LENGTH })
   readonly vat: string;
 
-  @IsOptional()
+  @IsMilitaryTime({ message: ey.TIME_FORMAT })
+  @IsISO8601()
+  readonly startWork: string;
+
+  @IsMilitaryTime({ message: ey.TIME_FORMAT })
+  @IsISO8601()
+  readonly endWork: string;
+
   @IsNumberString({ message: e.INSERT_ONLY_NUMBERS })
   @IsAlphanumeric({ message: e.INSERT_ONLY_NUMBERS })
-  @Length(10, 10, { message: e.AME_LENGTH })
-  readonly ame?: string;
+  readonly employerId: string;
 }
