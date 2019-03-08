@@ -1,4 +1,5 @@
 import express from 'express';
+import { Request, Response } from 'express';
 import { isUniqueVat } from '../middlewares/isUniqueVat';
 import { findAll, create} from './controllers';
 import { employerExists } from '../middlewares/employerExists';

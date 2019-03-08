@@ -6,6 +6,7 @@ import { Employer } from '../employer/entity';
 import { createEmployee } from './service';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
+import { validateEmployee, validateCreateEmployeeDto } from '../utils/validation';
 // import { validate } from './validation';
 
 const employee404 = 'Employee with the given Id was not found';
@@ -14,26 +15,22 @@ const error500 = 'Internal Server Error';
 
 /** - POST - /employee # creates a new employee. */
 export const create = async (req: Request, res: Response) => {
-  const {
-    body,
-    body: { employerID },
-  } = req;
-
   try {
+    await validateCreateEmployeeDto(req.body);
+    const {
+      body,
+      body: { employerID },
+    } = req;
+
     const employer: Employer = await getEmployerById(employerID);
     if (!employer) throw new Error('404');
-
     const employeeData = {
-      ...pick(body, ['vat', 'startWork', 'endWork']),
-      // ...body,
+      // ...pick(body, ['vat', 'startWork', 'endWork']),
+      ...body,
       employer,
     };
-    const employeeToCreate: Employee = plainToClass(Employee, employeeData);
-    const errors = await validate(employeeToCreate, { whitelist: true });
-    if (errors.length > 0) throw new Error('500');
-
+    const employeeToCreate = await validateEmployee(employeeData);
     const employee = await createEmployee(employeeToCreate);
-
     res.send(employee);
   } catch (error) {
     switch (error.message) {
