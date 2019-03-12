@@ -7,6 +7,7 @@ import { createEmployee } from './service';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { validateEmployee, validateCreateEmployeeDto } from '../utils/validation';
+import { CreateEmployeeDto } from './dto';
 // import { validate } from './validation';
 
 const employee404 = 'Employee with the given Id was not found';
@@ -15,31 +16,25 @@ const error500 = 'Internal Server Error';
 
 /** - POST - /employee # creates a new employee. */
 export const create = async (req: Request, res: Response) => {
-  try {
-    await validateCreateEmployeeDto(req.body);
-    const {
-      body,
-      body: { employerID },
-    } = req;
+  // Validate req.body with createEmployeeDto
+  const dto = plainToClass(CreateEmployeeDto, req.body as object);
+  // { whitelist: true } has side effect
+  const errors = await validate(dto, { whitelist: true });
+  if (errors.length > 0) res.status(400).send('bad request');
 
-    const employer: Employer = await getEmployerById(employerID);
-    if (!employer) throw new Error('404');
-    const employeeData = {
-      // ...pick(body, ['vat', 'startWork', 'endWork']),
-      ...body,
-      employer,
-    };
-    const employeeToCreate = await validateEmployee(employeeData);
-    const employee = await createEmployee(employeeToCreate);
+  try {
+    const employee = await createEmployee(dto);
     res.send(employee);
   } catch (error) {
+    // TODO: proper error handling, and response messages.
     switch (error.message) {
       case '500':
         res.status(500).send(error500);
       case '404':
         res.status(404).send(employer404);
+      default:
+        res.status(500).send(error500);
     }
-    res.status(500).send('error500');
   }
 };
 
