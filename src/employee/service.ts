@@ -1,19 +1,18 @@
 import { getRepository } from 'typeorm';
 import { Employee } from './entity';
 import { EmployeeDto } from './dto';
-import { Employer } from '../employer/entity';
+import { findEmployerById } from '../employer/service';
 
-const employerRepo = getRepository(Employer);
 const employeeRepo = getRepository(Employee);
 
 export async function createEmployee(dto: EmployeeDto) {
   try {
     // Get employer
-    // const employer = await findEmployer(dto.employerId);
-    // Combine dto with employer
-    // const employee = { ...dto, employer };
-    // save to db
-    // return await employeeRepo.save(employee);
+    const employer = await findEmployerById(dto.employerId);
+    // Combine data to form the employee object.
+    const employee = { ...dto, employer };
+    // Save to db.
+    return await employeeRepo.save(employee);
   } catch (error) {
     throw error;
   }
@@ -39,10 +38,14 @@ export async function findEmployee(id: string) {
 
 export async function updateEmployee(id: string, dto: EmployeeDto) {
   try {
+    // Find employee to update with the given id.
     const employeeToUpdate = await findEmployee(id);
-    // const employer = await findEmployer(dto.employerId);
-    // const newEmployer = { ...employeeToUpdate, ...dto, employer };
-    // return await employeeRepo.save(newEmployer);
+    // Find employer.
+    const employer = await findEmployerById(dto.employerId);
+    // Combine data to form the updated employee object.
+    const newEmployee = { ...employeeToUpdate, ...dto, employer };
+    // Save to db.
+    return await employeeRepo.save(newEmployee);
   } catch (error) {
     throw error;
   }
