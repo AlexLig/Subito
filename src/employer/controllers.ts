@@ -1,6 +1,12 @@
 import { Request, Response } from 'express';
 import { Employer } from './entity';
-import { findAllEmployers, findEmployerById } from './service';
+import {
+  findAllEmployers,
+  findEmployerById,
+  createEmployer,
+  deleteEmployer,
+  updateEmployer,
+} from './service';
 
 const employer404 = 'Employer does not exist';
 const error500 = 'Internal Server Error';
@@ -26,14 +32,12 @@ export async function findAll(req: Request, res: Response): Promise<Response> {
 }
 
 /**
- * -GET- /employer:id?getRelatedEmployees=true|false
- * Returns an Employer by its ID. If getRelatedEmployees is true,
- * adds Employee[] property as employer.employees property.
+ * -GET- /employer:id?getRelatedEmployees=true|false.
  */
 export async function findById(req: Request, res: Response): Promise<Response> {
   try {
     // Get employer from service.
-    const employer = await findEmployerById(
+    const employer: Employer = await findEmployerById(
       req.params.id,
       req.query.getRelatedEmployees, // ! Sanitize query string!
     );
@@ -41,7 +45,45 @@ export async function findById(req: Request, res: Response): Promise<Response> {
     // Return response.
     return res.send(employer);
   } catch (e) {
-    // If not found, send 404.
+    // TODO: If not found, send 404.
+    res.status(500).send('ERROR. HANDLE IT.');
+  }
+}
+
+export async function create(req: Request, res: Response): Promise<Response> {
+  try {
+    // Get saved employer from service.
+    const employer = await createEmployer(req.body);
+
+    // Return employer.
+    return res.send(employer);
+  } catch (e) {
+    res.status(500).send('ERROR. HANDLE IT.');
+  }
+}
+
+/** -PUT- /employer/:id */
+export async function update(req: Request, res: Response): Promise<Response> {
+  try {
+    // Get response from service.
+    const response = await updateEmployer(req.params.id, req.body);
+
+    // Return response
+    return res.send(response);
+  } catch (e) {
+    res.status(500).send('ERROR. HANDLE IT.');
+  }
+}
+
+/** -DELETE- /employer/:id */
+export async function remove(req: Request, res: Response): Promise<Response> {
+  try {
+    // Get response from service.
+    const response = await deleteEmployer(req.params.id);
+
+    // Return response
+    return res.send(response);
+  } catch (e) {
     res.status(500).send('ERROR. HANDLE IT.');
   }
 }
