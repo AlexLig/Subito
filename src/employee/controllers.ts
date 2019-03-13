@@ -7,7 +7,7 @@ import { createEmployee } from './service';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { validateEmployee, validateCreateEmployeeDto } from '../utils/validation';
-import { CreateEmployeeDto } from './dto';
+import { EmployeeDto } from './dto';
 // import { validate } from './validation';
 
 const employee404 = 'Employee with the given Id was not found';
@@ -17,7 +17,7 @@ const error500 = 'Internal Server Error';
 /** - POST - /employee # creates a new employee. */
 export const create = async (req: Request, res: Response) => {
   // Validate req.body with createEmployeeDto
-  const dto = plainToClass(CreateEmployeeDto, req.body as object);
+  const dto = plainToClass(EmployeeDto, req.body as object);
   // { whitelist: true } has side effect
   const errors = await validate(dto, { whitelist: true });
   if (errors.length > 0) res.status(400).send('bad request');
