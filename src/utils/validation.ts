@@ -1,7 +1,7 @@
 import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 import { Employee } from '../employee/entity';
-import { CreateEmployeeDto } from '../employee/dto';
+import { EmployeeDto } from '../employee/dto';
 
 const validation = (cls: any) => async (data: object): Promise<any | Error> => {
   const objToValidate = plainToClass(cls, data);
@@ -11,4 +11,4 @@ const validation = (cls: any) => async (data: object): Promise<any | Error> => {
 };
 
 export const validateEmployee = validation(Employee);
-export const validateCreateEmployeeDto = validation(CreateEmployeeDto);
+export const validateCreateEmployeeDto = validation(EmployeeDto);

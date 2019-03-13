@@ -9,7 +9,7 @@ import {
 import { generalErrors as e } from '../shared';
 import { employeeErrors as ey } from '../shared';
 
-export class CreateEmployeeDto {
+export class EmployeeDto {
   @IsString()
   readonly name: string;
 

@@ -1,30 +1,59 @@
 import { getRepository } from 'typeorm';
 import { Employee } from './entity';
-import { CreateEmployeeDto } from './dto';
+import { EmployeeDto } from './dto';
 import { Employer } from '../employer/entity';
 
-export async function createEmployee(dto: CreateEmployeeDto) {
-  const employerRepo = getRepository(Employer);
-  const employeeRepo = getRepository(Employee);
+const employerRepo = getRepository(Employer);
+const employeeRepo = getRepository(Employee);
 
-  // Get employer
-  let employer;
+export async function createEmployee(dto: EmployeeDto) {
   try {
-    employer = await employerRepo.findOne(dto.employerId);
-  } catch (e) {
-    throw new Error(e.message);
+    // Get employer
+    // const employer = await findEmployer(dto.employerId);
+    // Combine dto with employer
+    // const employee = { ...dto, employer };
+    // save to db
+    // return await employeeRepo.save(employee);
+  } catch (error) {
+    throw error;
   }
+}
 
-  // Check if exists
-  if (!employer) throw new Error('404');
-
-  // Combine dto with employer
-  const employee = { ...dto, employer };
-
-  // save to db
+export async function findAllEmployees() {
   try {
-    return await employeeRepo.save(employee);
-  } catch (e) {
-    throw new Error(e.message);
+    return await employeeRepo.find();
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function findEmployee(id: string) {
+  try {
+    const employee = await employeeRepo.findOne(id);
+    if (!employee) throw new Error();
+    return employee;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function updateEmployee(id: string, dto: EmployeeDto) {
+  try {
+    const employeeToUpdate = await findEmployee(id);
+    // const employer = await findEmployer(dto.employerId);
+    // const newEmployer = { ...employeeToUpdate, ...dto, employer };
+    // return await employeeRepo.save(newEmployer);
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function deleteEmployee(id: string) {
+  try {
+    const employeeToDelete = await employeeRepo.findOne(id);
+    if (!employeeToDelete) throw new Error();
+    return await employeeRepo.remove(employeeToDelete);
+  } catch (error) {
+    throw error;
   }
 }
