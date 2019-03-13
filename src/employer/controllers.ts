@@ -11,9 +11,6 @@ export async function findAll(res: Response): Promise<Response> {
     // Get all employers.
     const employers: Employer[] = await findAllEmployers();
 
-    // If none, send not found.
-    if (employers.length < 0) return res.status(404).send('not found');
-
     // Return all employers.
     return res.send(employers);
   } catch (error) {

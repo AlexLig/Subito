@@ -9,7 +9,13 @@ export async function getEmployerById(id: string): Promise<Employer> {
 /** Returns an array of all the Employers. */
 export async function findAllEmployers(): Promise<Employer[]> {
   try {
-    return await getRepository(Employer).find();
+    // Get all employers.
+    const employers: Employer[] = await getRepository(Employer).find();
+
+    // If none, send not found.
+    if (employers.length < 0) throw new Error('not found');
+
+    return employers;
   } catch (error) {
     throw new Error(error.message);
   }
