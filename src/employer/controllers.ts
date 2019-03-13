@@ -6,7 +6,7 @@ const employer404 = 'Employer does not exist';
 const error500 = 'Internal Server Error';
 
 /** -GET- /employer # Returns all employers. */
-export async function findAll(res: Response): Promise<Response> {
+export async function findAll(req: Request, res: Response): Promise<Response> {
   try {
     // Get all employers.
     const employers: Employer[] = await findAllEmployers();
