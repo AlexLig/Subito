@@ -25,7 +25,11 @@ export async function findAll(req: Request, res: Response): Promise<Response> {
   }
 }
 
-/** -GET- /employer # Returns all employers. */
+/**
+ * -GET- /employer:id?getRelatedEmployees=true|false
+ * Returns an Employer by its ID. If getRelatedEmployees is true,
+ * adds Employee[] property as employer.employees property.
+ */
 export async function findById(req: Request, res: Response): Promise<Response> {
   try {
     // Get employer from service.
