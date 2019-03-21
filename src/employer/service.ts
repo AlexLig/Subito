@@ -2,18 +2,20 @@ import { getRepository } from 'typeorm';
 import { Employer } from './entity';
 import { EmployerDto } from './dto';
 
+const employerRepo = getRepository(Employer);
+
 export async function getEmployerById(id: string): Promise<Employer> {
-  const employer = await getRepository(Employer).findOne(id);
+  const employer = await employerRepo.findOne(id);
   return employer;
 }
 
 /** Returns an array of all the Employers. */
 export async function findAllEmployers(): Promise<Employer[]> {
   // Get all employers.
-  const employers: Employer[] = await getRepository(Employer).find();
+  const employers: Employer[] = await employerRepo.find();
 
   // If none, send not found.
-  if (employers.length < 0) throw new Error('not found');
+  if (employers.length < 0) throw new HttpError(404, 'Employers Not found');
 
   return employers;
 }
@@ -26,19 +28,17 @@ export async function findEmployerById(
   id: string,
   getRelatedEmployees = false,
 ): Promise<Employer> {
-  const repository = getRepository(Employer);
-
   // If not getRelated, find Employer.
   let employer: Employer;
-  if (!getRelatedEmployees) employer = await repository.findOne(id);
+  if (!getRelatedEmployees) employer = await employerRepo.findOne(id);
 
   // If getRelated, find Employer with relations 'employees'.
   if (getRelatedEmployees) {
-    employer = await repository.findOne(id, { relations: ['employees'] });
+    employer = await employerRepo.findOne(id, { relations: ['employees'] });
   }
 
   // If not found, throw 404.
-  if (!employer) throw new Error('not found');
+  if (!employer) throw new HttpError(404, 'Employer Not found');
 
   // Return Employer.
   return employer;
@@ -46,10 +46,10 @@ export async function findEmployerById(
 
 /** Saves an Employer to the db and returns it. */
 export async function createEmployer(dto: EmployerDto): Promise<Employer> {
-  const duplicate = await getRepository(Employer).findOne({ vat: dto.vat });
-  if (duplicate) throw new Error('DUPLICATE');
+  const duplicate = await employerRepo.findOne({ vat: dto.vat });
+  if (duplicate) throw new HttpError(409, 'Dublicate vat.');
 
-  return await getRepository(Employer).save(dto);
+  return await employerRepo.save(dto);
 }
 
 /**
@@ -62,22 +62,28 @@ export async function updateEmployer(
 ): Promise<Employer> {
   // If vat is duplicate, throw error.
   if (dto.vat) {
-    const duplicate = await getRepository(Employer).findOne({ vat: dto.vat });
-    if (duplicate && duplicate.id.toString() !== id) throw new Error('DUPLICATE');
+    const duplicate = await employerRepo.findOne({ vat: dto.vat });
+    if (duplicate && duplicate.id.toString() !== id) {
+      throw new HttpError(409, 'Dublicate vat.');
+    }
   }
 
   // Find Employer to update.
   const employerToUpdate = await findEmployerById(id);
 
+  // Check if exist.
+  if (!employerToUpdate) throw new HttpError(404, 'Employer not found');
+
   // Merge Employer with dto.
   const updated = { ...employerToUpdate, ...dto };
 
   // Save to repository.
-  return await getRepository(Employer).save(updated);
+  return await employerRepo.save(updated);
 }
 
 /** Removes an Employer from the db by its ID, and returns the deleted Employer. */
 export async function deleteEmployer(id: string): Promise<Employer> {
   const employer = await findEmployerById(id);
-  return await getRepository(Employer).remove(employer);
+  if (!employer) throw new HttpError(404, 'Employer not found');
+  return await employerRepo.remove(employer);
 }

@@ -23,15 +23,13 @@ router
       try {
         const employers: Employer[] = await findAllEmployers();
         return res.send(employers);
-      } catch (error) {
-        switch (error.message) {
-          case '500':
-            res.status(500).send(error500);
-          case '404':
-            res.status(404).send(employer404);
-          default:
-            res.status(500).send(error500);
-        }
+      } catch (e) {
+        /* statusCode:number is a property of 
+        HttpError class that extends Error.
+        We cannot check for the typeof e,
+        because the instance of HttpError is an Error object.*/
+        if (e.statusCode) return res.status(e.statusCode).send(e.message);
+        else return res.status(500).send(error500);
       }
     },
   )
@@ -43,7 +41,12 @@ router
         const employer: Employer = await createEmployer(req.body);
         return res.send(employer);
       } catch (e) {
-        res.status(500).send('ERROR. HANDLE IT.');
+        /* statusCode:number is a property of 
+        HttpError class that extends Error.
+        We cannot check for the typeof e,
+        because the instance of HttpError is an Error object.*/
+        if (e.statusCode) return res.status(e.statusCode).send(e.message);
+        else return res.status(500).send(error500);
       }
     },
   );
@@ -65,7 +68,12 @@ router
         );
         return res.send(employer);
       } catch (e) {
-        res.status(500).send('ERROR. HANDLE IT.');
+        /* statusCode:number is a property of 
+        HttpError class that extends Error.
+        We cannot check for the typeof e,
+        because the instance of HttpError is an Error object.*/
+        if (e.statusCode) return res.status(e.statusCode).send(e.message);
+        else return res.status(500).send(error500);
       }
     },
   )
@@ -77,7 +85,12 @@ router
         const employer: Employer = await updateEmployer(req.params.id, req.body);
         return res.send(employer);
       } catch (e) {
-        res.status(500).send('ERROR. HANDLE IT.');
+        /* statusCode:number is a property of 
+        HttpError class that extends Error.
+        We cannot check for the typeof e,
+        because the instance of HttpError is an Error object.*/
+        if (e.statusCode) return res.status(e.statusCode).send(e.message);
+        else return res.status(500).send(error500);
       }
     },
   )
@@ -89,7 +102,12 @@ router
         const employer: Employer = await deleteEmployer(req.params.id);
         return res.send(employer);
       } catch (e) {
-        res.status(500).send('ERROR. HANDLE IT.');
+        /* statusCode:number is a property of 
+        HttpError class that extends Error.
+        We cannot check for the typeof e,
+        because the instance of HttpError is an Error object.*/
+        if (e.statusCode) return res.status(e.statusCode).send(e.message);
+        else return res.status(500).send(error500);
       }
     },
   );

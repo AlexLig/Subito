@@ -20,7 +20,7 @@ export async function findAllEmployees() {
 
 export async function findEmployee(id: string) {
   const employee = await employeeRepo.findOne(id);
-  if (!employee) throw new Error();
+  if (!employee) throw new Error('404');
   return employee;
 }
 
@@ -37,6 +37,6 @@ export async function updateEmployee(id: string, dto: EmployeeDto) {
 
 export async function deleteEmployee(id: string) {
   const employeeToDelete = await employeeRepo.findOne(id);
-  if (!employeeToDelete) throw new Error();
+  if (!employeeToDelete) throw new Error('404');
   return await employeeRepo.remove(employeeToDelete);
 }
