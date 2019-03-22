@@ -4,11 +4,6 @@ import { EmployerDto } from './dto';
 
 const employerRepo = getRepository(Employer);
 
-export async function getEmployerById(id: string): Promise<Employer> {
-  const employer = await employerRepo.findOne(id);
-  return employer;
-}
-
 /** Returns an array of all the Employers. */
 export async function findAllEmployers(): Promise<Employer[]> {
   // Get all employers.
@@ -71,9 +66,6 @@ export async function updateEmployer(
   // Find Employer to update.
   const employerToUpdate = await findEmployerById(id);
 
-  // Check if exist.
-  if (!employerToUpdate) throw new HttpError(404, 'Employer not found');
-
   // Merge Employer with dto.
   const updated = { ...employerToUpdate, ...dto };
 
@@ -84,6 +76,5 @@ export async function updateEmployer(
 /** Removes an Employer from the db by its ID, and returns the deleted Employer. */
 export async function deleteEmployer(id: string): Promise<Employer> {
   const employer = await findEmployerById(id);
-  if (!employer) throw new HttpError(404, 'Employer not found');
   return await employerRepo.remove(employer);
 }

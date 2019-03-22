@@ -15,12 +15,14 @@ export async function createEmployee(dto: EmployeeDto) {
 }
 
 export async function findAllEmployees() {
-  return await employeeRepo.find();
+  const employees: Employee[] = await employeeRepo.find();
+  if (employees.length < 0) throw new HttpError(404, 'Employees not found');
+  return employees;
 }
 
 export async function findEmployee(id: string) {
   const employee = await employeeRepo.findOne(id);
-  if (!employee) throw new Error('404');
+  if (!employee) throw new HttpError(404, 'Employee not found');
   return employee;
 }
 
@@ -36,7 +38,6 @@ export async function updateEmployee(id: string, dto: EmployeeDto) {
 }
 
 export async function deleteEmployee(id: string) {
-  const employeeToDelete = await employeeRepo.findOne(id);
-  if (!employeeToDelete) throw new Error('404');
+  const employeeToDelete = await findEmployee(id);
   return await employeeRepo.remove(employeeToDelete);
 }

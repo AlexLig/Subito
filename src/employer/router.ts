@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { Employer } from './entity';
 import {
   findAllEmployers,
@@ -8,9 +8,6 @@ import {
   deleteEmployer,
 } from './service';
 
-const employer404 = 'Employer does not exist';
-const error500 = 'Internal Server Error';
-
 export const router = express.Router();
 
 /** /api/employer */
@@ -19,34 +16,24 @@ router
 
   /** Get all employers. */
   .get(
-    async (req: Request, res: Response): Promise<Response> => {
+    async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
       try {
-        const employers: Employer[] = await findAllEmployers();
+        const employers = await findAllEmployers();
         return res.send(employers);
       } catch (e) {
-        /* statusCode:number is a property of 
-        HttpError class that extends Error.
-        We cannot check for the typeof e,
-        because the instance of HttpError is an Error object.*/
-        if (e.statusCode) return res.status(e.statusCode).send(e.message);
-        else return res.status(500).send(error500);
+        next(e);
       }
     },
   )
 
   /** Save an employer to the db. */
   .post(
-    async (req: Request, res: Response): Promise<Response> => {
+    async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
       try {
-        const employer: Employer = await createEmployer(req.body);
+        const employer = await createEmployer(req.body);
         return res.send(employer);
       } catch (e) {
-        /* statusCode:number is a property of 
-        HttpError class that extends Error.
-        We cannot check for the typeof e,
-        because the instance of HttpError is an Error object.*/
-        if (e.statusCode) return res.status(e.statusCode).send(e.message);
-        else return res.status(500).send(error500);
+        next(e);
       }
     },
   );
@@ -60,54 +47,39 @@ router
    * Get an employer by id. Query string to also get all related employees.
    */
   .get(
-    async (req: Request, res: Response): Promise<Response> => {
+    async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
       try {
-        const employer: Employer = await findEmployerById(
+        const employer = await findEmployerById(
           req.params.id,
           req.query.getRelatedEmployees, // ! Sanitize query string!
         );
         return res.send(employer);
       } catch (e) {
-        /* statusCode:number is a property of 
-        HttpError class that extends Error.
-        We cannot check for the typeof e,
-        because the instance of HttpError is an Error object.*/
-        if (e.statusCode) return res.status(e.statusCode).send(e.message);
-        else return res.status(500).send(error500);
+        next(e);
       }
     },
   )
 
   /** Update an employer by its ID. */
   .put(
-    async (req: Request, res: Response): Promise<Response> => {
+    async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
       try {
-        const employer: Employer = await updateEmployer(req.params.id, req.body);
+        const employer = await updateEmployer(req.params.id, req.body);
         return res.send(employer);
       } catch (e) {
-        /* statusCode:number is a property of 
-        HttpError class that extends Error.
-        We cannot check for the typeof e,
-        because the instance of HttpError is an Error object.*/
-        if (e.statusCode) return res.status(e.statusCode).send(e.message);
-        else return res.status(500).send(error500);
+        next(e);
       }
     },
   )
 
   /** Remove an employer from the db. */
   .delete(
-    async (req: Request, res: Response): Promise<Response> => {
+    async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
       try {
         const employer: Employer = await deleteEmployer(req.params.id);
         return res.send(employer);
       } catch (e) {
-        /* statusCode:number is a property of 
-        HttpError class that extends Error.
-        We cannot check for the typeof e,
-        because the instance of HttpError is an Error object.*/
-        if (e.statusCode) return res.status(e.statusCode).send(e.message);
-        else return res.status(500).send(error500);
+        next(e);
       }
     },
   );
