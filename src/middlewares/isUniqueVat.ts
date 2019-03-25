@@ -14,7 +14,6 @@ export const isUniqueVat = (entity: 'Employer' | 'Employee') => async (
   const duplicate = (await getRepository(entity).findOne({
     vat: req.body.vat,
   })) as Employer | Employee;
-  console.log(duplicate);
   if (!duplicate || duplicate.id.toString() === req.params.id) return next();
 
   next(new HttpError(409, 'Vat must be unique.'));
