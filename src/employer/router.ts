@@ -65,7 +65,7 @@ router
 
   /** Update an employer by its ID. */
   .put(
-    validateReq(EmployerDto),
+    validateReq(EmployerDto, { skipMissingProperties: true }),
     async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
       try {
         const employer = await updateEmployer(req.params.id, req.body);

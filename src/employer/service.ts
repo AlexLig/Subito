@@ -1,6 +1,7 @@
 import { getRepository } from 'typeorm';
 import { Employer } from './entity';
 import { EmployerDto } from './dto';
+import { HttpError } from '../utils/HttpError';
 
 const getEmployerRepo = () => getRepository(Employer);
 

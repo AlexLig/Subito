@@ -50,7 +50,7 @@ router
   })
   /** Update an employer by its id. */
   .put(
-    validateReq(EmployeeDto),
+    validateReq(EmployeeDto, { skipMissingProperties: true }),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const employee = await updateEmployee(req.params.id, req.body);

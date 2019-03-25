@@ -2,6 +2,7 @@ import { getRepository } from 'typeorm';
 import { Employee } from './entity';
 import { EmployeeDto } from './dto';
 import { findEmployerById } from '../employer/service';
+import { HttpError } from '../utils/HttpError';
 
 const getEmployeeRepo = () => getRepository(Employee);
 

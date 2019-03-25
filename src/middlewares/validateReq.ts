@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { plainToClass } from 'class-transformer';
 import { validate, ValidatorOptions } from 'class-validator';
+import { HttpError } from '../utils/HttpError';
 
 export const validateReq = (dto: any, validateOtions?: ValidatorOptions) => async (
   req: Request,
