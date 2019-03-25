@@ -3,7 +3,7 @@ import { Employee } from './entity';
 import { EmployeeDto } from './dto';
 import { findEmployerById } from '../employer/service';
 
-const employeeRepo = () => getRepository(Employee);
+const getEmployeeRepo = () => getRepository(Employee);
 
 export async function createEmployee(dto: EmployeeDto) {
   // Get employer
@@ -11,17 +11,17 @@ export async function createEmployee(dto: EmployeeDto) {
   // Combine data to form the employee object.
   const employee = { ...dto, employer };
   // Save to db.
-  return await employeeRepo().save(employee);
+  return await getEmployeeRepo().save(employee);
 }
 
 export async function findAllEmployees() {
-  const employees: Employee[] = await employeeRepo().find();
+  const employees: Employee[] = await getEmployeeRepo().find();
   if (employees.length < 0) throw new HttpError(404, 'Employees not found');
   return employees;
 }
 
 export async function findEmployee(id: string) {
-  const employee = await employeeRepo().findOne(id);
+  const employee = await getEmployeeRepo().findOne(id);
   if (!employee) throw new HttpError(404, 'Employee not found');
   return employee;
 }
@@ -34,10 +34,10 @@ export async function updateEmployee(id: string, dto: EmployeeDto) {
   // Combine data to form the updated employee object.
   const newEmployee = { ...employeeToUpdate, ...dto, employer };
   // Save to db.
-  return await employeeRepo().save(newEmployee);
+  return await getEmployeeRepo().save(newEmployee);
 }
 
 export async function deleteEmployee(id: string) {
   const employeeToDelete = await findEmployee(id);
-  return await employeeRepo().remove(employeeToDelete);
+  return await getEmployeeRepo().remove(employeeToDelete);
 }

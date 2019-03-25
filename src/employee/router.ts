@@ -1,17 +1,61 @@
-import express from 'express';
+import express, { NextFunction } from 'express';
 import { Request, Response } from 'express';
-import { isUniqueVat } from '../middlewares/isUniqueVat';
-import { findAll, create} from './controllers';
-import { employerExists } from '../middlewares/employerExists';
+import {
+  findAllEmployees,
+  createEmployee,
+  findEmployee,
+  updateEmployee,
+  deleteEmployee,
+} from './service';
+import { Employee } from './entity';
 
-const uniqueVatEmployee = isUniqueVat('Employee');
 export const router = express.Router();
 router
   .route('/')
-  .get(findAll)
-  .post(create);
-// router
-//   .route('/:id')
-//   .get(findById)
-//   .put(uniqueVatEmployee, updateOne)
-//   .delete(deleteOne);
+
+  /** Get all employees */
+  .get(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const employees = await findAllEmployees();
+      return res.send(employees);
+    } catch (e) {
+      next(e);
+    }
+  })
+  /** Save an employee to the db. */
+  .post(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const employee = await createEmployee(req.body);
+      return res.send(employee);
+    } catch (e) {
+      next(e);
+    }
+  });
+router
+  .route('/:id')
+  /** Get employee by id */
+  .get(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const employee = await findEmployee(req.params.id);
+      return res.send(employee);
+    } catch (e) {
+      next(e);
+    }
+  })
+  /** Update an employer by its id. */
+  .put(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const employee = await updateEmployee(req.params.id, req.body);
+      return res.send(employee);
+    } catch (e) {
+      next(e);
+    }
+  })
+  .delete(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const employee: Employee = await deleteEmployee(req.params.id);
+      return res.send(employee);
+    } catch (e) {
+      next(e);
+    }
+  });
