@@ -10,6 +10,7 @@ import {
 import { validateReq } from '../middlewares/validateReq';
 import { EmployerDto } from './dto';
 import { trim } from '../middlewares/trim';
+import { isUniqueVat } from '../middlewares/isUniqueVat';
 
 export const router = express.Router();
 
@@ -32,6 +33,7 @@ router
   /** Save an employer to the db. */
   .post(
     trim('body'),
+    isUniqueVat('Employer'),
     validateReq(EmployerDto),
     async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
       try {
@@ -68,6 +70,7 @@ router
   /** Update an employer by its ID. */
   .put(
     trim('body'),
+    isUniqueVat('Employer'),
     validateReq(EmployerDto, { skipMissingProperties: true }),
     async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
       try {

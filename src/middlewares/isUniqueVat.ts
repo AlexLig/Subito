@@ -1,32 +1,21 @@
 import { NextFunction, Request, Response } from 'express';
 import { getRepository } from 'typeorm';
+import { HttpError } from '../utils/httpError';
+import { Employee } from '../employee/entity';
+import { Employer } from '../employer/entity';
 
-// export const isUnique = <T extends Document>(options: IOptions<T>) => async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ) => {
-//   const defaultMessage = 'Αυτή η τιμή χρησιμοποιείται ήδη.';
-//   const { collection: collection, property, errorMessage = defaultMessage } = options;
-//   const result = await collection.find({ [property]: req.body[property] });
-
-//   if (result[0] && result[0].id !== req.params.id) {
-//     return res.status(400).send(errorMessage);
-//   }
-
-//   next();
-// };
-
-export const isUniqueVat = (entity: string) => async (
+export const isUniqueVat = (entity: 'Employer' | 'Employee') => async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  const { vat } = req.body;
-  const duplicate = getRepository(entity).findOne({ vat });
-  if (duplicate) {
-    return res.status(400).send('Ο αφμ υπαρχει');
-  }
+  if (!req.body.vat) return next();
 
-  next();
+  const duplicate = (await getRepository(entity).findOne({
+    vat: req.body.vat,
+  })) as Employer | Employee;
+  console.log(duplicate);
+  if (!duplicate || duplicate.id.toString() === req.params.id) return next();
+
+  next(new HttpError(409, 'Vat must be unique.'));
 };

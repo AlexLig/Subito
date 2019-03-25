@@ -14,7 +14,7 @@ export const validateReq = (dto: any, validateOtions?: ValidatorOptions) => asyn
     forbidUnknownValues: true,
     ...validateOtions,
   });
-  if (errors.length > 0) next(new HttpError(400, `Bad Request.\n${errors}`));
+  if (errors.length > 0) return next(new HttpError(400, `Bad Request.\n${errors}`));
 
   req.body = dtoInstance;
   next();

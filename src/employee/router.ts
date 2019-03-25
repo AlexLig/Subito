@@ -29,6 +29,7 @@ router
   /** Save an employee to the db. */
   .post(
     trim('body'),
+    isUniqueVat('Employee'),
     validateReq(EmployeeDto),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -53,6 +54,7 @@ router
   /** Update an employer by its id. */
   .put(
     trim('body'),
+    isUniqueVat('Employee'),
     validateReq(EmployeeDto, { skipMissingProperties: true }),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
