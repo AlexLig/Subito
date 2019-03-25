@@ -1,7 +1,5 @@
-import { Employer } from '../employer/entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-// import { Employer } from 'src/employer/employer.entity';
-import { Expose } from 'class-transformer';
+import { Employer } from '../employer/entity';
 
 @Entity()
 export class Employee {
