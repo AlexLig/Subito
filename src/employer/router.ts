@@ -9,6 +9,7 @@ import {
 } from './service';
 import { validateReq } from '../middlewares/validateReq';
 import { EmployerDto } from './dto';
+import { trim } from '../middlewares/trim';
 
 export const router = express.Router();
 
@@ -30,6 +31,7 @@ router
 
   /** Save an employer to the db. */
   .post(
+    trim('body'),
     validateReq(EmployerDto),
     async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
       try {
@@ -65,6 +67,7 @@ router
 
   /** Update an employer by its ID. */
   .put(
+    trim('body'),
     validateReq(EmployerDto, { skipMissingProperties: true }),
     async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
       try {

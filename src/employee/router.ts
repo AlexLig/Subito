@@ -11,6 +11,7 @@ import { Employee } from './entity';
 import { validateReq } from '../middlewares/validateReq';
 import { EmployeeDto } from './dto';
 import { isUniqueVat } from '../middlewares/isUniqueVat';
+import { trim } from '../middlewares/trim';
 
 export const router = express.Router();
 router
@@ -27,6 +28,7 @@ router
   })
   /** Save an employee to the db. */
   .post(
+    trim('body'),
     validateReq(EmployeeDto),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -50,6 +52,7 @@ router
   })
   /** Update an employer by its id. */
   .put(
+    trim('body'),
     validateReq(EmployeeDto, { skipMissingProperties: true }),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
