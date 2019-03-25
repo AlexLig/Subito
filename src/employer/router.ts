@@ -7,6 +7,8 @@ import {
   updateEmployer,
   deleteEmployer,
 } from './service';
+import { validateReq } from '../middlewares/validateReq';
+import { EmployerDto } from './dto';
 
 export const router = express.Router();
 
@@ -28,6 +30,7 @@ router
 
   /** Save an employer to the db. */
   .post(
+    validateReq(EmployerDto),
     async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
       try {
         const employer = await createEmployer(req.body);
@@ -62,6 +65,7 @@ router
 
   /** Update an employer by its ID. */
   .put(
+    validateReq(EmployerDto),
     async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
       try {
         const employer = await updateEmployer(req.params.id, req.body);

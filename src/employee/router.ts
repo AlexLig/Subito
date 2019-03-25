@@ -8,6 +8,9 @@ import {
   deleteEmployee,
 } from './service';
 import { Employee } from './entity';
+import { validateReq } from '../middlewares/validateReq';
+import { EmployeeDto } from './dto';
+import { isUniqueVat } from '../middlewares/isUniqueVat';
 
 export const router = express.Router();
 router
@@ -23,14 +26,17 @@ router
     }
   })
   /** Save an employee to the db. */
-  .post(async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const employee = await createEmployee(req.body);
-      return res.send(employee);
-    } catch (e) {
-      next(e);
-    }
-  });
+  .post(
+    validateReq(EmployeeDto),
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const employee = await createEmployee(req.body);
+        return res.send(employee);
+      } catch (e) {
+        next(e);
+      }
+    },
+  );
 router
   .route('/:id')
   /** Get employee by id */
@@ -43,14 +49,17 @@ router
     }
   })
   /** Update an employer by its id. */
-  .put(async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const employee = await updateEmployee(req.params.id, req.body);
-      return res.send(employee);
-    } catch (e) {
-      next(e);
-    }
-  })
+  .put(
+    validateReq(EmployeeDto),
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const employee = await updateEmployee(req.params.id, req.body);
+        return res.send(employee);
+      } catch (e) {
+        next(e);
+      }
+    },
+  )
   .delete(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const employee: Employee = await deleteEmployee(req.params.id);
